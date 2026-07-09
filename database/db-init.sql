@@ -1,0 +1,75 @@
+CREATE TABLE Patients (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    age INT NOT NULL,
+    gender VARCHAR(10) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    phone_number VARCHAR(15) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    password_hash VARCHAR(255) NOT NULL
+    );
+
+
+CREATE TABLE Professionals (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    specialty VARCHAR(100) NOT NULL,
+    phone_number VARCHAR(15) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    password_hash VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Salles(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    used_by_professional_id INT REFERENCES Professionals(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Reservations (
+    id SERIAL PRIMARY KEY,
+    patient_id INT REFERENCES Patients(id),
+    professional_id INT REFERENCES Professionals(id),
+    salle_id INT REFERENCES Salles(id),
+    reservation_date TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Materiels (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Stocks (
+    id SERIAL PRIMARY KEY,
+    materiel_id INT REFERENCES Materiels(id),
+    quantity INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Notes (
+    id SERIAL PRIMARY KEY,
+    patient_id INT REFERENCES Patients(id),
+    professional_id INT REFERENCES Professionals(id),
+    note_text TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Depences (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    id_materiel INT REFERENCES Materiels(id),
+    price DECIMAL(10, 2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
