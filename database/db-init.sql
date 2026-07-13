@@ -26,7 +26,6 @@ CREATE TABLE Professionals (
 CREATE TABLE Salles(
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    used_by_professional_id INT REFERENCES Professionals(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -36,7 +35,8 @@ CREATE TABLE Reservations (
     patient_id INT REFERENCES Patients(id),
     professional_id INT REFERENCES Professionals(id),
     salle_id INT REFERENCES Salles(id),
-    reservation_date TIMESTAMP NOT NULL,
+    start_time TIMESTAMP NOT NULL,
+    end_time TIMESTAMP NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
