@@ -9,7 +9,7 @@ export default function Sidebar() {
 
 
       <div className="flex flex-1 flex-col gap-2 items-center ">
-        <Link href="/accueil">
+<Link href="/">
   <button>Accueil</button>
 </Link>
 
