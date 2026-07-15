@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import ReservationCalendar from "../components/ReservationCalendar";
+import ReservationForm from "../components/ReservationForm";
 
 type ReservationRow = {
   patient_name: string;
@@ -18,22 +19,11 @@ type CalendarEvent = {
   allDay?: boolean;
 };
 
-type Item = { id: number; name: string };
-
 export default function PlanningPage() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [showDetails, setShowDetails] = useState(false);
-  const [patients, setPatients] = useState<Item[]>([]);
-  const [professionals, setProfessionals] = useState<Item[]>([]);
-  const [salles, setSalles] = useState<Item[]>([]);
-  const [patientId, setPatientId] = useState("");
-  const [professionalId, setProfessionalId] = useState("");
-  const [salleId, setSalleId] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
   const loadReservations = async () => {
     try {
@@ -56,21 +46,6 @@ export default function PlanningPage() {
 
   useEffect(() => {
     void loadReservations();
-
-    fetch("/api/patients")
-      .then((res) => res.json())
-      .then((rows: Item[]) => setPatients(rows))
-      .catch(() => setPatients([]));
-
-    fetch("/api/professionals")
-      .then((res) => res.json())
-      .then((rows: Item[]) => setProfessionals(rows))
-      .catch(() => setProfessionals([]));
-
-    fetch("/api/salles")
-      .then((res) => res.json())
-      .then((rows: Item[]) => setSalles(rows))
-      .catch(() => setSalles([]));
   }, []);
 
   const selectedDayEvents = events.filter((event) => {
@@ -81,57 +56,6 @@ export default function PlanningPage() {
   const handleDateSelect = (date: string) => {
     setSelectedDate(date);
     setShowDetails(true);
-  };
-
-  const handleAddReservation = async () => {
-    if (!selectedDate || !patientId || !professionalId || !salleId || !startTime || !endTime) {
-      setMessage("Veuillez remplir tous les champs.");
-      return;
-    }
-
-    setMessage("");
-    const startDateTime = `${selectedDate}T${startTime}:00`;
-    const endDateTime = `${selectedDate}T${endTime}:00`;
-
-    try {
-      const response = await fetch("/api/reservations", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          patient_id: Number(patientId),
-          professional_id: Number(professionalId),
-          salle_id: Number(salleId),
-          start_at: startDateTime,
-          end_at: endDateTime,
-        }),
-      });
-
-      if (!response.ok) {
-        const text = await response.text();
-        let errorMessage = "Erreur lors de l’ajout.";
-        if (text) {
-          try {
-            const parsed = JSON.parse(text);
-            errorMessage = parsed?.error || errorMessage;
-          } catch {
-            errorMessage = text;
-          }
-        }
-        setMessage(errorMessage);
-        return;
-      }
-
-      setMessage("Réservation ajoutée avec succès.");
-      setPatientId("");
-      setProfessionalId("");
-      setSalleId("");
-      setStartTime("");
-      setEndTime("");
-      await loadReservations();
-    } catch (error) {
-      console.error(error);
-      setMessage("Erreur réseau.");
-    }
   };
 
   const formatDateLabel = (date: string) =>
@@ -194,9 +118,7 @@ export default function PlanningPage() {
                     </div>
                   ))
                 ) : (
-                  <p className="text-sm text-slate-500">
-                    Aucune réservation pour cette journée.
-                  </p>
+                  <p className="text-sm text-slate-500">Aucune réservation pour cette journée.</p>
                 )}
               </div>
             </section>
@@ -204,87 +126,20 @@ export default function PlanningPage() {
             <section className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
               <h3 className="text-lg font-semibold text-slate-900">Ajouter une réservation</h3>
               <p className="mt-1 text-sm text-slate-500">
-                Utilise le même type de formulaire que la page réservations.
+                Utilise le même formulaire que la page réservations.
               </p>
 
-              {message && (
-                <div className="mt-3 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
-                  {message}
-                </div>
-              )}
-
-              <div className="mt-4 space-y-3">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700">Patient</label>
-                  <select
-                    value={patientId}
-                    onChange={(e) => setPatientId(e.target.value)}
-                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
-                  >
-                    <option value="">Sélectionner un patient</option>
-                    {patients.map((patient) => (
-                      <option key={patient.id} value={patient.id}>{patient.name}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-slate-700">Professionnel</label>
-                  <select
-                    value={professionalId}
-                    onChange={(e) => setProfessionalId(e.target.value)}
-                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
-                  >
-                    <option value="">Sélectionner un professionnel</option>
-                    {professionals.map((professional) => (
-                      <option key={professional.id} value={professional.id}>{professional.name}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-slate-700">Salle</label>
-                  <select
-                    value={salleId}
-                    onChange={(e) => setSalleId(e.target.value)}
-                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
-                  >
-                    <option value="">Sélectionner une salle</option>
-                    {salles.map((salle) => (
-                      <option key={salle.id} value={salle.id}>{salle.name}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="grid gap-3 md:grid-cols-2">
-                  <label className="block">
-                    <span className="block text-sm font-medium text-slate-700">Début</span>
-                    <input
-                      type="time"
-                      value={startTime}
-                      onChange={(e) => setStartTime(e.target.value)}
-                      className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
-                    />
-                  </label>
-
-                  <label className="block">
-                    <span className="block text-sm font-medium text-slate-700">Fin</span>
-                    <input
-                      type="time"
-                      value={endTime}
-                      onChange={(e) => setEndTime(e.target.value)}
-                      className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"
-                    />
-                  </label>
-                </div>
+              <div className="mt-4 text-black">
+                <ReservationForm
+                  title="Ajouter une réservation"
+                  subtitle="Complète le formulaire puis enregistre la réservation pour la journée sélectionnée."
+                  compact
+                  selectedDate={selectedDate}
+                  onSuccess={() => {
+                    void loadReservations();
+                  }}
+                />
               </div>
-
-              <button
-                onClick={handleAddReservation}
-                className="mt-4 rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white"
-              >
-                Enregistrer
-              </button>
             </section>
           </div>
         )}
