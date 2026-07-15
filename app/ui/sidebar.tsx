@@ -32,6 +32,10 @@ export default function Sidebar() {
 <Link href="/professionnels">
   <button>Professionnels</button>
 </Link>
+
+<Link href="/reservations">
+    <button>Reservations</button>
+  </Link>
       </div>
     </aside>
   );
