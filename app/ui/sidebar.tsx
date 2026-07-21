@@ -13,27 +13,27 @@ export default function Sidebar() {
   <button>Accueil</button>
 </Link>
 
-<Link href="/presentation">
+<Link href="dashboard/presentation">
   <button>Présentation</button>
 </Link>
 
-<Link href="/contact">
+<Link href="dashboard/contact">
   <button>Contact</button>
 </Link>
 
-<Link href="/stock">
+<Link href="dashboard/stock">
   <button>Stock</button>
 </Link>
 
-<Link href="/planning">
+<Link href="dashboard/planning">
   <button>Planning</button>
 </Link>
 
-<Link href="/professionnels">
+<Link href="dashboard/professionnels">
   <button>Professionnels</button>
 </Link>
 
-<Link href="/reservations">
+<Link href="dashboard/reservations">
     <button>Reservations</button>
   </Link>
       </div>

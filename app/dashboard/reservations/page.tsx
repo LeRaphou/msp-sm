@@ -1,6 +1,6 @@
 "use client";
 
-import ReservationForm from "../components/ReservationForm";
+import ReservationForm from "@/app/components/ReservationForm";
 
 export default function ReservationPage() {
   return (

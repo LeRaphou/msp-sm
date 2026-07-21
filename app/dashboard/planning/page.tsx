@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import ReservationCalendar from "../components/ReservationCalendar";
-import ReservationForm from "../components/ReservationForm";
+import ReservationCalendar from "@/app/components/ReservationCalendar";
+import ReservationForm from "@/app/components/ReservationForm";
 
 type ReservationRow = {
   patient_name: string;
@@ -125,9 +125,7 @@ export default function PlanningPage() {
 
             <section className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
               <h3 className="text-lg font-semibold text-slate-900">Ajouter une réservation</h3>
-              <p className="mt-1 text-sm text-slate-500">
-                Utilise le même formulaire que la page réservations.
-              </p>
+              
 
               <div className="mt-4 text-black">
                 <ReservationForm
