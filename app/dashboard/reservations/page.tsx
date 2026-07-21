@@ -12,7 +12,6 @@ export default function ReservationPage() {
             Choisis le patient, le professionnel et la salle, puis renseigne les horaires.
           </p>
         </div>
-
         <ReservationForm />
       </div>
     </main>
